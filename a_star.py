@@ -5,7 +5,7 @@ from Node import Node
 def best_friend_search():
     open_nodes = []
     closed = []
-    map_obj = Map_Obj(task=2)
+    map_obj = Map_Obj(task=4)
     endpos = map_obj.get_goal_pos()
 
     start = Node(None, map_obj.get_start_pos(), endpos, 0)
@@ -21,6 +21,7 @@ def best_friend_search():
             print("Finished after {} iterations".format(i))
             endnode = current
             while current.parent is not None:
+                map_obj.save_frame(i)
                 print(current.pos)
                 current = current.parent
                 map_obj.set_cell_value(current.pos, 'p')
@@ -55,9 +56,8 @@ def best_friend_search():
             print("No path found")
             return None, map_obj
 
-        if not i%10:
-            pass
-            map_obj.save_frame(i)
+        #if not i%10:
+        map_obj.save_frame(i)
         i+=1
 
 

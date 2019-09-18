@@ -1,3 +1,4 @@
 *.csv
 __pycahche__/
 /img/
+.idea/

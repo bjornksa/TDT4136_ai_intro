@@ -223,7 +223,7 @@ class Map_Obj():
                 for i in range(scale):
                     for j in range(scale):
                         pixels[x * scale + i, y * scale + j] = colors[map[y][x]]
-        image.save("img/astar{}_{}.png".format(self.task, frame_no), "png")
+        image.save("img/task{}/astar_{}.png".format(self.task, frame_no), "png")
 
     def show_map(self, map=None):
         """
