@@ -12,6 +12,7 @@ class Map_Obj():
         self.set_cell_value(self.start_pos, ' S ')
         self.set_cell_value(self.goal_pos, ' G ')
         self.tick_counter = 0
+        self.task = task
         #self.set_start_pos_str_marker(start_pos, self.str_map)
         #self.set_goal_pos_str_marker(goal_pos, self.str_map)
 
@@ -191,6 +192,39 @@ class Map_Obj():
         else:
             map[goal_pos[0]][goal_pos[1]] = ' G '
 
+    def save_frame(self, frame_no):
+        """
+        Draw the map with colored open and closed tiles, save the image
+        :param frame_no: Frame number of the image(used for gif creation
+        :return: nothing
+        """
+
+        map = self.str_map
+
+        # Define width and height of image
+        width = map.shape[1]
+        height = map.shape[0]
+        # Define scale of the image
+        scale = 20
+        # Create an all-yellow image
+        image = Image.new('RGB', (width * scale, height * scale), (255, 255, 0))
+        # Load image
+        pixels = image.load()
+
+        # Define what colors to give to different values of the string map (undefined values will remain yellow, this is
+        # how the yellow path is painted)
+        colors = {' # ': (255, 0, 0), ' . ': (215, 215, 215), ' , ': (166, 166, 166), ' : ': (96, 96, 96),
+                  ' ; ': (36, 36, 36), ' S ': (255, 0, 255), ' G ': (0, 128, 255), 'p': (0,0,255),
+                  'o': (0,255,0)}
+        # Go through image and set pixel color for every position
+        for y in range(height):
+            for x in range(width):
+                if map[y][x] not in colors: continue
+                for i in range(scale):
+                    for j in range(scale):
+                        pixels[x * scale + i, y * scale + j] = colors[map[y][x]]
+        image.save("img/task{}/astar_{}.png".format(self.task, frame_no), "png")
+
     def show_map(self, map=None):
         """
         A function used to draw the map as an image and show it.
@@ -218,7 +252,8 @@ class Map_Obj():
         # Define what colors to give to different values of the string map (undefined values will remain yellow, this is
         # how the yellow path is painted)
         colors = {' # ': (255, 0, 0), ' . ': (215, 215, 215), ' , ': (166, 166, 166), ' : ': (96, 96, 96),
-                  ' ; ': (36, 36, 36), ' S ': (255, 0, 255), ' G ': (0, 128, 255)}
+                  ' ; ': (36, 36, 36), ' S ': (255, 0, 255), ' G ': (0, 128, 255), 'p': (0,0,255),
+                  'o': (0,255,0)}
         # Go through image and set pixel color for every position
         for y in range(height):
             for x in range(width):

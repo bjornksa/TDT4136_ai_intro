@@ -1,4 +1,4 @@
 *.csv
-__pycahche__/
+/__pycache__/
 /img/
 .idea/

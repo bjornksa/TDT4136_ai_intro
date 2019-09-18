@@ -1,4 +1,4 @@
-from Map_2 import Map_Obj
+from Map import Map_Obj
 from Node import Node
 
 
