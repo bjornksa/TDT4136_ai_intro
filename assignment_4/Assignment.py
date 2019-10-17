@@ -1,7 +1,6 @@
 import copy
 import itertools
 
-
 class CSP:
     def __init__(self):
         # self.variables is a list of the variable names in the CSP
@@ -13,6 +12,12 @@ class CSP:
         # self.constraints[i][j] is a list of legal value pairs for
         # the variable pair (i, j)
         self.constraints = {}
+
+        # counter variable for backtrack function
+        self.counter_backtrack = 0
+
+        #counter value for backtrack failues
+        self.counter_backtrack_false = 0
 
     def add_variable(self, name, domain):
         """Add a new variable to the CSP. 'name' is the variable name
@@ -108,12 +113,29 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
-        # TODO: IMPLEMENT THIS
 
-        var = self.select_unassigned_variable(assignment)
+        self.counter_backtrack += 1
+
+        completed = True
+        for var in assignment:
+            if (len(assignment[var]) != 1):
+                completed = False
+                break
+        if (completed):
+            return assignment
         
+        var = self.select_unassigned_variable(assignment)        
+        for value in assignment[var]:
+            assignment_copy = copy.deepcopy(assignment)
+            assignment_copy[var] = [value]
 
-        pass
+            if self.inference(assignment_copy, self.get_all_neighboring_arcs(var)):
+                result = self.backtrack(assignment_copy)
+                if result:
+                    return result
+
+        self.counter_backtrack_false += 1
+        return False
 
     def select_unassigned_variable(self, assignment):
         """The function 'Select-Unassigned-Variable' from the pseudocode
@@ -123,7 +145,7 @@ class CSP:
         """
 
         for var in assignment:
-            if (len(assignment[var]) > 0):
+            if (len(assignment[var]) > 1):
                 return var
 
         return False
@@ -134,8 +156,16 @@ class CSP:
         the lists of legal values for each undecided variable. 'queue'
         is the initial queue of arcs that should be visited.
         """
-        # TODO: IMPLEMENT THIS
-        pass
+        while (queue):
+            (i,j) = queue.pop()
+            if self.revise(assignment, i, j):
+                if len(assignment[i]) == 0:
+                    return False
+                for kx, ky in self.get_all_neighboring_arcs(i):
+                    if kx not in (i, j):
+                        queue.append((kx,i))
+        return True
+
 
     def revise(self, assignment, i, j):
         """The function 'Revise' from the pseudocode in the textbook.
@@ -146,8 +176,18 @@ class CSP:
         between i and j, the value should be deleted from i's list of
         legal values in 'assignment'.
         """
-        # TODO: IMPLEMENT THIS
-        pass
+        revised = False
+        constraints = list(self.constraints[i][j])
+        for x in assignment[i]:
+            y_satisifies = False
+            for y in assignment[j]:
+                if ((x,y) in constraints):
+                    y_satisifies = True
+                    break
+            if not y_satisifies:
+                revised = True
+                assignment[i].remove(x)
+        return revised
 
 
 def create_map_coloring_csp():
@@ -217,3 +257,37 @@ def print_sudoku_solution(solution):
         print("")
         if row == 2 or row == 5:
             print('------+-------+------')
+
+
+def pretty_print_sudoku(sudoku_file):
+    """ Prettyprint the unfinished sudokuboard, 
+    used for impressing people when showing of the code"""
+    with open(sudoku_file) as board:
+        lines = board.readlines()
+        row = 0
+        for line in lines:
+            col = 0
+            for num in line:
+                print(num.rstrip(), end=" ")
+                if col == 2 or col == 5:
+                    print('|', end=" ")
+                col += 1
+
+            print("")
+            if row == 2 or row == 5:
+                print('------+-------+------')
+            row += 1
+                
+
+def main():
+    print("\nBoard before solving:")
+    pretty_print_sudoku("TDT4136_ai_intro/assignment_4/veryhard.txt")
+
+    csp = create_sudoku_csp("TDT4136_ai_intro/assignment_4/veryhard.txt")
+    print("\nBoard after solving:")
+    print_sudoku_solution(csp.backtracking_search())
+
+
+    print("backtrack counter: ", csp.counter_backtrack,"\nbacktrack returning false counter: ", csp.counter_backtrack_false)
+
+main()
