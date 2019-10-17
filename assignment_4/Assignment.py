@@ -280,10 +280,11 @@ def pretty_print_sudoku(sudoku_file):
                 
 
 def main():
+    difficulty = "veryhard"
     print("\nBoard before solving:")
-    pretty_print_sudoku("TDT4136_ai_intro/assignment_4/veryhard.txt")
+    pretty_print_sudoku("TDT4136_ai_intro/assignment_4/" + difficulty +".txt")
 
-    csp = create_sudoku_csp("TDT4136_ai_intro/assignment_4/veryhard.txt")
+    csp = create_sudoku_csp("TDT4136_ai_intro/assignment_4/"+ difficulty + ".txt")
     print("\nBoard after solving:")
     print_sudoku_solution(csp.backtracking_search())
 
