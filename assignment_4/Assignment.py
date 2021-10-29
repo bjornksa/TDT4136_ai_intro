@@ -123,8 +123,8 @@ class CSP:
                 break
         if (completed):
             return assignment
-        
-        var = self.select_unassigned_variable(assignment)        
+
+        var = self.select_unassigned_variable(assignment)
         for value in assignment[var]:
             assignment_copy = copy.deepcopy(assignment)
             assignment_copy[var] = [value]
@@ -260,7 +260,7 @@ def print_sudoku_solution(solution):
 
 
 def pretty_print_sudoku(sudoku_file):
-    """ Prettyprint the unfinished sudokuboard, 
+    """ Prettyprint the unfinished sudokuboard,
     used for impressing people when showing of the code"""
     with open(sudoku_file) as board:
         lines = board.readlines()
@@ -277,14 +277,15 @@ def pretty_print_sudoku(sudoku_file):
             if row == 2 or row == 5:
                 print('------+-------+------')
             row += 1
-                
+
 
 def main():
     difficulty = "veryhard"
     print("\nBoard before solving:")
-    pretty_print_sudoku("TDT4136_ai_intro/assignment_4/" + difficulty +".txt")
+    filename = difficulty + ".txt"
+    pretty_print_sudoku(filename)
 
-    csp = create_sudoku_csp("TDT4136_ai_intro/assignment_4/"+ difficulty + ".txt")
+    csp = create_sudoku_csp(filename)
     print("\nBoard after solving:")
     print_sudoku_solution(csp.backtracking_search())
 
